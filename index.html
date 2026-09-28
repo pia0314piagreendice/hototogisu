@@ -12,54 +12,45 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start; /* 上詰めにして距離をコントロール */
+        justify-content: center; /* 画面全体を中央に寄せる */
         height: 100vh;
         margin: 0;
-        padding-top: 30px; /* 上部の余白 */
-        gap: 30px; /* 各エリアの隙間を詰める */
+        gap: 20px; /* 要素間の隙間を詰める */
         overflow: hidden;
         user-select: none;
         -webkit-user-select: none;
         touch-action: none;
     }
 
-    /* 上部：タイトル（和風ゲームロゴ風の装飾） */
+    /* 上部：タイトル */
     #title-area {
-        font-size: 32px;
+        font-size: 28px;
         font-weight: bold;
         text-align: center;
         z-index: 10;
-        
-        /* 装飾 */
-        background: #2c3e50; /* 濃紺の背景 */
+        background: #2c3e50;
         color: #fdfdfd;
-        padding: 15px 40px;
-        border: 3px solid #d4af37; /* 金色の縁取り */
+        padding: 10px 30px;
+        border: 2px solid #d4af37;
         border-radius: 8px;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         position: relative;
+        margin-bottom: 10px;
     }
-    /* 内側の飾り枠 */
     #title-area::before {
         content: '';
         position: absolute;
-        top: 4px; left: 4px; right: 4px; bottom: 4px;
+        top: 3px; left: 3px; right: 3px; bottom: 3px;
         border: 1px solid #d4af37;
         border-radius: 4px;
         pointer-events: none;
     }
     
     ruby { ruby-position: over; }
-    #char-jo-wrapper {
-        position: relative;
-        display: inline-block;
-    }
-    #char-jo {
-        display: inline-block;
-    }
+    #char-jo-wrapper { position: relative; display: inline-block; }
+    #char-jo { display: inline-block; }
     
-    /* 切られた後の「女」と「口」 */
     #char-onna, #char-kuchi {
         display: none;
         position: absolute;
@@ -71,7 +62,6 @@
         left: 50%;
         cursor: grab;
         z-index: 100;
-        /* ドラッグできる口を赤く発光させて目立たせる */
         color: #ff5252;
         text-shadow: 0 0 10px rgba(255, 82, 82, 0.8);
         padding: 20px;
@@ -85,72 +75,62 @@
         justify-content: center;
         align-items: center;
         position: relative;
-        width: 100%;
-        margin-top: 10px;
     }
     #bird {
         position: relative;
-        width: 220px;
-        height: 220px;
+        width: 180px; /* 鳥も少しコンパクトに */
+        height: 180px;
     }
     
     .bird-svg-container {
-        width: 100%;
-        height: 100%;
+        width: 100%; height: 100%;
         pointer-events: none;
     }
     .bird-part {
-        position: absolute;
-        top: 0;
-        left: 0;
+        position: absolute; top: 0; left: 0;
         transition: transform 0.6s ease-out, opacity 0.6s;
     }
     
     .bird-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
     .bird-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
-    .cut-left { transform: translateX(-60px) rotate(-15deg); opacity: 0; }
-    .cut-right { transform: translateX(60px) rotate(15deg); opacity: 0; }
+    .cut-left { transform: translateX(-50px) rotate(-15deg); opacity: 0; }
+    .cut-right { transform: translateX(50px) rotate(15deg); opacity: 0; }
 
     .singing-bird .beak-closed { display: none !important; }
     .singing-bird .beak-open { display: block !important; }
 
     #note {
         position: absolute;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         color: #ff4081;
         background: rgba(255, 255, 255, 0.95);
         border: 2px solid #ff4081;
-        padding: 8px 12px;
+        padding: 6px 10px;
         border-radius: 20px;
-        top: 0px;
-        right: -60px;
+        top: -10px; right: -50px;
         opacity: 0;
         transition: opacity 0.5s, transform 0.5s;
         white-space: nowrap;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
     #note::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 20px;
+        content: ''; position: absolute;
+        bottom: -8px; left: 20px;
         border-width: 8px 8px 0;
         border-style: solid;
         border-color: #ff4081 transparent transparent transparent;
-        display: block;
-        width: 0;
+        display: block; width: 0;
     }
     .singing {
         opacity: 1 !important;
-        transform: translateY(-15px) rotate(5deg);
+        transform: translateY(-10px) rotate(5deg);
     }
 
     #kanji-naku {
         display: none;
-        font-size: 160px;
+        font-size: 140px;
         font-weight: bold;
-        /* ゴールドに輝く「鳴」 */
         background: linear-gradient(to bottom, #d4af37, #b8860b);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -159,62 +139,56 @@
 
     /* 下部：刀とリセットボタン */
     #bottom-area {
-        margin-top: auto; /* 余ったスペースを埋めて一番下へ */
-        margin-bottom: 40px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 15px;
-        width: 100%;
+        gap: 10px; /* 刀とボタンの隙間を詰める */
         z-index: 50;
+        margin-top: 10px;
     }
     
     #sword {
-        width: 220px; /* 刀を少し大きく長く表示 */
-        height: 220px;
+        width: 140px; /* 刀を適切なサイズに縮小 */
+        height: 140px;
         cursor: grab;
         position: relative;
         z-index: 200;
-        padding: 20px; 
-        margin: -20px;
+        padding: 10px;
     }
     #sword:active { cursor: grabbing; }
 
     #reset-btn {
-        padding: 12px 35px;
-        font-size: 16px;
+        padding: 10px 30px;
+        font-size: 14px;
         font-weight: bold;
         cursor: pointer;
         background-color: #4a4a4a;
         color: white;
         border: 2px solid #333;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        border-radius: 6px;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.3);
         transition: background-color 0.2s, transform 0.1s;
     }
     #reset-btn:active { transform: scale(0.95); }
 
-    /* 結果表示のモーダルウインドウ */
+    /* モーダルウインドウ */
     #result-modal {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.6);
         display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: center; align-items: center;
         z-index: 1000;
-        opacity: 0;
-        pointer-events: none;
+        opacity: 0; pointer-events: none;
         transition: opacity 0.3s ease;
     }
     #result-modal.show {
-        opacity: 1;
-        pointer-events: auto;
+        opacity: 1; pointer-events: auto;
     }
     
     .modal-content {
         background: #fdfaf5;
-        padding: 40px 50px;
+        padding: 30px 40px;
         border-radius: 12px;
         text-align: center;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -222,33 +196,23 @@
         transform: scale(0.8);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    #result-modal.show .modal-content {
-        transform: scale(1);
-    }
+    #result-modal.show .modal-content { transform: scale(1); }
 
-    .modal-title-text {
-        font-size: 20px;
-        color: #555;
-        margin-bottom: 10px;
-    }
+    .modal-title-text { font-size: 18px; color: #555; margin-bottom: 10px; }
     
     #modal-text {
-        font-size: 40px;
+        font-size: 32px;
         font-weight: bold;
         color: #d32f2f;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     }
 
     #modal-close-btn {
-        background: #2c3e50;
-        color: #fff;
-        border: none;
-        padding: 12px 30px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 6px;
-        cursor: pointer;
+        background: #2c3e50; color: #fff;
+        border: none; padding: 10px 25px;
+        font-size: 16px; font-weight: bold;
+        border-radius: 6px; cursor: pointer;
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     #modal-close-btn:active { transform: scale(0.95); }
@@ -257,12 +221,10 @@
 </head>
 <body>
 
-    <!-- タイトル -->
     <div id="title-area">
         <ruby>不<rt>ホト</rt></ruby><span id="char-jo-wrapper"><span id="char-jo"><ruby>如<rt>トギ</rt></ruby></span><span id="char-onna">女</span><span id="char-kuchi">口</span></span><ruby>帰<rt>ス</rt></ruby>診断
     </div>
 
-    <!-- 鳥・文字エリア -->
     <div id="center-area">
         <div id="bird">
             <div id="bird-whole" class="bird-svg-container"></div>
@@ -273,45 +235,42 @@
         <div id="kanji-naku">鳴</div>
     </div>
 
-    <!-- 下部エリア（刀とリセット） -->
     <div id="bottom-area">
         <div id="sword">
-            <!-- リアルな日本刀（打刀）のベクターイラスト -->
-            <svg viewBox="0 0 300 300" width="100%" height="100%" style="filter: drop-shadow(4px 4px 5px rgba(0,0,0,0.5));">
+            <!-- よりリアルでシャープな日本刀のベクターイラスト -->
+            <svg viewBox="0 0 200 200" width="100%" height="100%" style="filter: drop-shadow(3px 3px 4px rgba(0,0,0,0.4));">
                 <defs>
                     <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stop-color="#ffffff"/>
-                        <stop offset="40%" stop-color="#d1d5db"/>
-                        <stop offset="100%" stop-color="#6b7280"/>
+                        <stop offset="40%" stop-color="#cbd5e1"/>
+                        <stop offset="100%" stop-color="#64748b"/>
                     </linearGradient>
                 </defs>
-                <!-- 刀全体を斜めに配置 -->
-                <g transform="translate(50, 250) rotate(-45)">
+                <g transform="translate(35, 165) rotate(-45)">
+                    <!-- 柄（つか）の土台 -->
+                    <rect x="0" y="-5" width="45" height="10" fill="#f8f9fa"/>
                     
-                    <!-- 柄（つか）の土台：鮫肌（白） -->
-                    <rect x="0" y="-8" width="70" height="16" fill="#f8f9fa"/>
+                    <!-- 柄巻（つかまき：美しいひし形模様） -->
+                    <path d="M0,-5 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10" stroke="#111" stroke-width="1.5"/>
+                    <path d="M5,-5 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10" stroke="#111" stroke-width="1.5"/>
                     
-                    <!-- 柄巻（つかまき：菱形の紐飾り） -->
-                    <path d="M 5 -8 L 15 8 M 15 -8 L 25 8 M 25 -8 L 35 8 M 35 -8 L 45 8 M 45 -8 L 55 8 M 55 -8 L 65 8" stroke="#111" stroke-width="2"/>
-                    <path d="M 5 8 L 15 -8 M 15 8 L 25 -8 M 25 8 L 35 -8 M 35 8 L 45 -8 M 45 8 L 55 -8 M 55 8 L 65 -8" stroke="#111" stroke-width="2"/>
+                    <!-- 柄頭（かしら） -->
+                    <rect x="-4" y="-6" width="4" height="12" fill="#222" rx="1"/>
                     
-                    <!-- 柄頭（かしら：柄の先端の金具） -->
-                    <rect x="-4" y="-9" width="6" height="18" rx="2" fill="#222" stroke="#d4af37"/>
+                    <!-- 鍔（つば） -->
+                    <rect x="45" y="-12" width="4" height="24" fill="#222" stroke="#d4af37" stroke-width="1" rx="1"/>
                     
-                    <!-- 鍔（つば：手を守る部分） -->
-                    <rect x="70" y="-15" width="6" height="30" rx="2" fill="#222" stroke="#d4af37" stroke-width="1.5"/>
+                    <!-- 鎺（はばき） -->
+                    <rect x="49" y="-5" width="6" height="10" fill="#d4af37"/>
                     
-                    <!-- 鎺（はばき：刀身の根本の金色の金具） -->
-                    <path d="M 76 -7 L 88 -8 L 88 8 L 76 7 Z" fill="#d4af37"/>
+                    <!-- 刀身（棟から刃先にかけての美しい反り） -->
+                    <path d="M 55 -5 Q 120 -15 180 -5 Q 192 -1 192 4 Q 120 -5 55 5 Z" fill="url(#bladeGrad)"/>
                     
-                    <!-- 刀身（反りのある美しい刃） -->
-                    <path d="M 88 -8 Q 180 -25 260 -10 Q 275 -5 285 5 Q 270 10 260 8 Q 180 -5 88 8 Z" fill="url(#bladeGrad)"/>
+                    <!-- 鎬（しのぎ：刀身の立体感を出す線） -->
+                    <path d="M 55 0 Q 120 -7 185 -1" stroke="#94a3b8" stroke-width="0.5" fill="none"/>
                     
-                    <!-- 鎬（しのぎ：刀身の稜線、立体感を出す線） -->
-                    <path d="M 88 -2 Q 180 -15 264 -2 L 285 5" stroke="#9ca3af" stroke-width="1.5" fill="none"/>
-                    
-                    <!-- 刃文（はもん：波打つ焼き入れの模様） -->
-                    <path d="M 88 4 Q 100 0 110 5 T 140 4 T 170 5 T 200 4 T 230 5 T 255 2" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.8"/>
+                    <!-- 刃文（はもん：波打つ模様） -->
+                    <path d="M 55 2 Q 70 0 80 3 T 110 1 T 140 3 T 170 2" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.8"/>
                 </g>
             </svg>
         </div>
@@ -338,19 +297,11 @@
                 <path d="M 45 80 C 50 45, 80 40, 100 50 C 120 60, 140 80, 155 95 C 130 135, 80 150, 45 125 C 30 110, 35 90, 45 80 Z" />
             </clipPath>
         </defs>
-        
-        <!-- 尾羽 -->
         <path d="M 140 90 L 195 115 L 185 130 L 130 110 Z" fill="#444d56"/>
         <path d="M 145 100 L 195 125 L 185 135 L 135 115 Z" fill="#363c43"/>
-        
-        <!-- 足 -->
         <path d="M 80 140 L 75 170 L 65 175 M 75 170 L 85 175" stroke="#d49a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
         <path d="M 100 135 L 95 165 L 85 170 M 95 165 L 105 170" stroke="#d49a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
-        
-        <!-- お腹のベース（白） -->
         <path d="M 45 80 C 50 45, 80 40, 100 50 C 120 60, 140 80, 155 95 C 130 135, 80 150, 45 125 C 30 110, 35 90, 45 80 Z" fill="#ffffff"/>
-        
-        <!-- お腹の縞模様 -->
         <g clip-path="url(#birdClip)">
             <path d="M 30 95 Q 80 120 150 95" stroke="#333" stroke-width="2.5" fill="none"/>
             <path d="M 30 105 Q 80 130 150 105" stroke="#333" stroke-width="2.5" fill="none"/>
@@ -358,18 +309,10 @@
             <path d="M 30 125 Q 80 150 150 125" stroke="#333" stroke-width="2.5" fill="none"/>
             <path d="M 40 135 Q 80 160 140 135" stroke="#333" stroke-width="2.5" fill="none"/>
         </g>
-        
-        <!-- 背中と頭 -->
         <path d="M 45 80 C 50 45, 80 40, 100 50 C 120 60, 140 80, 155 95 C 130 90, 90 85, 45 80 Z" fill="#6c7782"/>
-        
-        <!-- 翼 -->
         <path d="M 90 75 C 110 75, 135 95, 150 120 C 125 110, 100 95, 90 75 Z" fill="#525b64"/>
-        
-        <!-- アイリングと目 -->
         <circle cx="60" cy="65" r="3.5" fill="#111"/>
         <circle cx="60" cy="65" r="5" fill="none" stroke="#f1c40f" stroke-width="2"/>
-        
-        <!-- クチバシ -->
         <path class="beak-closed" d="M 45 72 L 15 76 L 45 82 Z" fill="#333"/>
         <path class="beak-open" d="M 45 72 L 15 62 L 38 75 Z M 45 82 L 15 92 L 40 80 Z" fill="#333" style="display:none;"/>
         <path class="beak-open" d="M 38 75 L 15 77 L 40 80 Z" fill="#c0392b" style="display:none;"/>
@@ -380,7 +323,6 @@
     document.getElementById('bird-l').innerHTML = birdSVG;
     document.getElementById('bird-r').innerHTML = birdSVG;
 
-    // ゲームロジック
     const sword = document.getElementById('sword');
     const bird = document.getElementById('bird');
     const birdWhole = document.getElementById('bird-whole');
@@ -392,7 +334,6 @@
     const charOnna = document.getElementById('char-onna');
     const charKuchi = document.getElementById('char-kuchi');
     
-    // モーダル要素
     const resultModal = document.getElementById('result-modal');
     const modalText = document.getElementById('modal-text');
     const modalCloseBtn = document.getElementById('modal-close-btn');
@@ -400,7 +341,6 @@
     let gameActive = true;
     let timerId;
 
-    // 家康タイマー
     function startIeyasuTimer() {
         timerId = setTimeout(() => {
             if (!gameActive) return;
@@ -412,17 +352,14 @@
     }
     startIeyasuTimer();
 
-    // モーダル表示関数
     function showResult(text) {
         modalText.innerText = text;
         resultModal.classList.add('show');
-        sword.style.visibility = 'hidden'; // 刀を隠す
+        sword.style.visibility = 'hidden'; 
     }
 
-    // モーダルを閉じる処理
     modalCloseBtn.addEventListener('click', () => {
         resultModal.classList.remove('show');
-        // gameActive は false のままなので、閉じた後は絵をゆっくり眺められます
     });
 
     function isColliding(el1, el2) {
@@ -437,7 +374,6 @@
         );
     }
 
-    // ドラッグ＆ドロップ機能
     function makeDraggable(element, onDrop) {
         let currentX = 0, currentY = 0;
         let initialX, initialY;
@@ -448,10 +384,8 @@
             isDragging = true;
             element.setPointerCapture(e.pointerId);
             element.style.transition = 'none';
-
             initialX = e.clientX - currentX;
             initialY = e.clientY - currentY;
-            
             element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.1)`;
             element.style.zIndex = 1000;
         });
@@ -475,9 +409,7 @@
         });
     }
 
-    // 刀のドラッグ設定
     makeDraggable(sword, (draggedElement) => {
-        // 1. 信長ルート（鳥を斬る）
         if (isColliding(draggedElement, bird)) {
             gameActive = false;
             clearTimeout(timerId);
@@ -493,8 +425,6 @@
 
             showResult("あなたは信長タイプ！");
         }
-        
-        // 2. 秀吉ルートの準備（「如」を斬る）
         else if (charJo.style.display !== 'none' && isColliding(draggedElement, charJo)) {
             charJo.style.display = 'none';
             charOnna.style.display = 'inline-block';
@@ -505,9 +435,7 @@
                 charKuchi.style.transform = 'translateX(20px) rotate(15deg)';
             }, 50);
 
-            // 分割された「口」をドラッグ可能にする
             makeDraggable(charKuchi, (draggedKuchi) => {
-                // 口を鳥に重ねる
                 if (isColliding(draggedKuchi, bird)) {
                     gameActive = false;
                     clearTimeout(timerId);
