@@ -23,14 +23,12 @@
     }
 
     #title-area {
-        /* フォントサイズを28pxから1.5倍の42pxに拡大 */
         font-size: 42px;
         font-weight: bold;
         text-align: center;
         z-index: 10;
         background: #2c3e50;
         color: #fdfdfd;
-        /* 文字の拡大に合わせて枠の余白も少し調整 */
         padding: 15px 40px;
         border: 2px solid #d4af37;
         border-radius: 8px;
@@ -153,6 +151,7 @@
         position: relative;
         z-index: 200;
         padding: 5px;
+        transition: opacity 0.3s; /* 消えるときのアニメーション */
     }
     #sword:active { cursor: grabbing; }
 
@@ -326,7 +325,8 @@
             gameActive = false;
             birdWhole.classList.add('singing-bird');
             note.classList.add('singing');
-            sword.style.visibility = 'hidden'; 
+            sword.style.opacity = '0'; // フェードアウトさせる
+            setTimeout(() => { sword.style.visibility = 'hidden'; }, 300);
             
             setTimeout(() => {
                 showResult("あなたは家康タイプ！");
@@ -383,7 +383,7 @@
             if (!isDragging) return;
             isDragging = false;
             element.releasePointerCapture(e.pointerId);
-            element.style.transition = '';
+            element.style.transition = 'opacity 0.3s'; // 刀が消える時のために元に戻す
             element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
             if (gameActive && onDrop) {
                 onDrop(element);
@@ -392,6 +392,7 @@
     }
 
     makeDraggable(sword, (draggedElement) => {
+        // 1. 信長ルート（ホトトギスを直接斬る）
         if (isColliding(draggedElement, bird)) {
             gameActive = false;
             clearTimeout(timerId);
@@ -399,7 +400,10 @@
             birdWhole.style.display = 'none';
             birdL.style.display = 'block';
             birdR.style.display = 'block';
-            sword.style.visibility = 'hidden'; 
+            
+            // 刀を消去
+            sword.style.opacity = '0';
+            setTimeout(() => { sword.style.visibility = 'hidden'; }, 300);
             
             setTimeout(() => {
                 birdL.classList.add('cut-left');
@@ -410,10 +414,15 @@
                 showResult("あなたは信長タイプ！");
             }, 1000);
         }
+        // 2. 秀吉ルート準備（「如」を斬る）
         else if (charJo.style.visibility !== 'hidden' && isColliding(draggedElement, charJo)) {
             charJo.style.visibility = 'hidden';
             charOnna.style.display = 'inline-block';
             charKuchi.style.display = 'inline-block';
+            
+            // ★追加：如を斬ったら刀は消滅する
+            sword.style.opacity = '0';
+            setTimeout(() => { sword.style.visibility = 'hidden'; }, 300);
             
             setTimeout(() => {
                 charOnna.style.transform = 'translateX(-20px) rotate(-15deg)';
@@ -428,7 +437,6 @@
                     draggedKuchi.style.display = 'none';
                     bird.style.display = 'none';
                     kanjiNaku.style.display = 'block';
-                    sword.style.visibility = 'hidden';
                     
                     setTimeout(() => {
                         showResult("あなたは秀吉タイプ！");
