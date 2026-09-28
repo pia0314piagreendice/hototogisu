@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>不如帰診断</title>
 <style>
     body {
@@ -16,14 +16,17 @@
         margin: 0;
         overflow: hidden;
         user-select: none;
+        -webkit-user-select: none;
+        touch-action: none; /* スマホでのスワイプスクロールを防止 */
     }
 
     /* 上部：タイトル */
     #title-area {
-        margin-top: 50px;
-        font-size: 36px;
+        margin-top: 10vh;
+        font-size: 32px;
         font-weight: bold;
         text-align: center;
+        z-index: 10;
     }
     ruby {
         ruby-position: over;
@@ -46,8 +49,10 @@
     #char-kuchi { 
         left: 50%;
         cursor: grab;
-        z-index: 10;
-        color: #d32f2f; /* ドラッグできることが分かりやすいように色を変える */
+        z-index: 100;
+        color: #d32f2f;
+        padding: 10px;
+        margin: -10px; /* ドラッグしやすくするための余白 */
     }
     #char-kuchi:active { cursor: grabbing; }
 
@@ -62,8 +67,8 @@
     }
     #bird {
         position: relative;
-        width: 200px;
-        height: 200px;
+        width: 180px;
+        height: 180px;
     }
     #bird img {
         width: 100%;
@@ -71,7 +76,7 @@
         object-fit: cover;
         border-radius: 15px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        pointer-events: none; /* 画像自体のドラッグを防ぐ */
+        pointer-events: none;
     }
     .bird-part {
         position: absolute;
@@ -79,25 +84,24 @@
         left: 0;
         transition: transform 0.6s ease-out, opacity 0.6s;
     }
-    /* 写真を左右に分割するクリップパス */
     .bird-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
     .bird-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
     
-    .cut-left { transform: translateX(-80px) rotate(-15deg); opacity: 0; }
-    .cut-right { transform: translateX(80px) rotate(15deg); opacity: 0; }
+    .cut-left { transform: translateX(-60px) rotate(-15deg); opacity: 0; }
+    .cut-right { transform: translateX(60px) rotate(15deg); opacity: 0; }
 
     /* 鳴き声の吹き出し */
     #note {
         position: absolute;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: bold;
         color: #ff4081;
         background: rgba(255, 255, 255, 0.95);
         border: 2px solid #ff4081;
-        padding: 10px 15px;
-        border-radius: 30px;
-        top: -20px;
-        right: -80px;
+        padding: 8px 12px;
+        border-radius: 20px;
+        top: -30px;
+        right: -90px;
         opacity: 0;
         transition: opacity 0.5s, transform 0.5s;
         white-space: nowrap;
@@ -106,9 +110,9 @@
     #note::after {
         content: '';
         position: absolute;
-        bottom: -10px;
+        bottom: -8px;
         left: 20px;
-        border-width: 10px 10px 0;
+        border-width: 8px 8px 0;
         border-style: solid;
         border-color: #ff4081 transparent transparent transparent;
         display: block;
@@ -121,7 +125,7 @@
 
     #kanji-naku {
         display: none;
-        font-size: 150px;
+        font-size: 120px;
         font-weight: bold;
         color: #333;
         text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
@@ -130,20 +134,22 @@
     /* 下部：刀とリセットボタン */
     #bottom-area {
         position: absolute;
-        bottom: 30px;
+        bottom: 5vh;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 30px;
+        gap: 20px;
         width: 100%;
+        z-index: 50;
     }
     #sword {
         font-size: 70px;
         cursor: grab;
         position: relative;
-        z-index: 100;
-        transition: transform 0.1s;
+        z-index: 200;
         filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
+        padding: 20px;
+        margin: -20px; /* スマホでタッチしやすくする */
     }
     #sword:active {
         cursor: grabbing;
@@ -161,21 +167,22 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         transition: background-color 0.2s, transform 0.1s;
     }
-    #reset-btn:hover { background-color: #333; }
     #reset-btn:active { transform: scale(0.95); }
 
     /* 結果表示 */
     #result-text {
         position: absolute;
-        top: 25%;
-        font-size: 45px;
+        top: 30%;
+        font-size: 36px;
         font-weight: bold;
         color: #d32f2f;
         opacity: 0;
         transition: opacity 1s;
         pointer-events: none;
-        text-shadow: 2px 2px 5px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.8);
-        z-index: 50;
+        text-shadow: 2px 2px 5px rgba(255,255,255,0.9), 0 0 10px rgba(255,255,255,0.9);
+        z-index: 300;
+        width: 100%;
+        text-align: center;
     }
 </style>
 </head>
@@ -187,10 +194,10 @@
 
     <div id="center-area">
         <div id="bird">
-            <!-- Wikimedia Commonsのホトトギスの写真を使用 -->
-            <img id="bird-whole" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Cuculus_poliocephalus.jpg/320px-Cuculus_poliocephalus.jpg" alt="ホトトギス">
-            <img class="bird-part bird-left" id="bird-l" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Cuculus_poliocephalus.jpg/320px-Cuculus_poliocephalus.jpg" style="display:none;" alt="ホトトギス左半身">
-            <img class="bird-part bird-right" id="bird-r" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Cuculus_poliocephalus.jpg/320px-Cuculus_poliocephalus.jpg" style="display:none;" alt="ホトトギス右半身">
+            <!-- 安定して表示される高画質の鳥のフリー素材 -->
+            <img id="bird-whole" src="https://images.unsplash.com/photo-1552728089-57105a8e7ce5?auto=format&fit=crop&w=300&q=80" alt="ホトトギス">
+            <img class="bird-part bird-left" id="bird-l" src="https://images.unsplash.com/photo-1552728089-57105a8e7ce5?auto=format&fit=crop&w=300&q=80" style="display:none;" alt="ホトトギス左半身">
+            <img class="bird-part bird-right" id="bird-r" src="https://images.unsplash.com/photo-1552728089-57105a8e7ce5?auto=format&fit=crop&w=300&q=80" style="display:none;" alt="ホトトギス右半身">
             <div id="note">ホーホケキョ♪</div>
         </div>
         <div id="kanji-naku">鳴</div>
@@ -205,8 +212,7 @@
 
 <script>
     // ===== ゲーム設定 =====
-    const WAIT_TIME = 120000; // 家康タイプ判定までの時間（120000ms = 2分）
-    // ※テスト時は 5000 (5秒) などに変更すると確認しやすくなります。
+    const WAIT_TIME = 120000; // 2分
 
     // ===== 要素の取得 =====
     const sword = document.getElementById('sword');
@@ -229,7 +235,6 @@
         timerId = setTimeout(() => {
             if (!gameActive) return;
             gameActive = false;
-            // 鳴く演出（吹き出し表示）
             note.classList.add('singing');
             showResult("あなたは家康タイプ！");
         }, WAIT_TIME);
@@ -240,51 +245,59 @@
     function showResult(text) {
         resultText.innerText = text;
         resultText.style.opacity = 1;
-        sword.style.display = 'none'; // 刀を隠す
+        sword.style.visibility = 'hidden'; 
     }
 
     // 重なり判定関数
     function isColliding(el1, el2) {
         const rect1 = el1.getBoundingClientRect();
         const rect2 = el2.getBoundingClientRect();
+        // 判定を少し甘くする（中心付近でのみ判定）
+        const padding = 20;
         return !(
-            rect1.top > rect2.bottom ||
-            rect1.right < rect2.left ||
-            rect1.bottom < rect2.top ||
-            rect1.left > rect2.right
+            rect1.top + padding > rect2.bottom ||
+            rect1.right - padding < rect2.left ||
+            rect1.bottom - padding < rect2.top ||
+            rect1.left + padding > rect2.right
         );
     }
 
-    // ドラッグ＆ドロップ機能を追加する関数
+    // ドラッグ＆ドロップ機能（ワープしないように修正）
     function makeDraggable(element, onDrop) {
-        let offsetX, offsetY;
+        let currentX = 0, currentY = 0;
+        let initialX, initialY;
         let isDragging = false;
         
         element.addEventListener('pointerdown', (e) => {
             if (!gameActive) return;
             isDragging = true;
             element.setPointerCapture(e.pointerId);
-            const currentRect = element.getBoundingClientRect();
-            offsetX = e.clientX - currentRect.left;
-            offsetY = e.clientY - currentRect.top;
             
-            // 自由移動できるように絶対配置へ変更
-            element.style.position = 'absolute';
-            element.style.transform = 'scale(1.2)'; // 掴んでいる感を強調
+            // クリックした位置と現在の移動量の差分を記録
+            initialX = e.clientX - currentX;
+            initialY = e.clientY - currentY;
+            
+            element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.2)`;
             element.style.zIndex = 1000;
         });
 
         element.addEventListener('pointermove', (e) => {
             if (!isDragging || !gameActive) return;
-            element.style.left = (e.clientX - offsetX) + 'px';
-            element.style.top = (e.clientY - offsetY) + 'px';
+            
+            // 新しい位置を計算
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+            
+            // translateを使って移動させる（画面ワープ防止）
+            element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.2)`;
         });
 
         element.addEventListener('pointerup', (e) => {
             if (!isDragging) return;
             isDragging = false;
             element.releasePointerCapture(e.pointerId);
-            element.style.transform = 'scale(1)';
+            
+            element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
             if (gameActive && onDrop) {
                 onDrop(element);
             }
@@ -298,12 +311,10 @@
             gameActive = false;
             clearTimeout(timerId);
             
-            // 写真の斬られ演出
             birdWhole.style.display = 'none';
             birdL.style.display = 'block';
             birdR.style.display = 'block';
             
-            // アニメーション発火
             setTimeout(() => {
                 birdL.classList.add('cut-left');
                 birdR.classList.add('cut-right');
@@ -314,12 +325,10 @@
         
         // 2. 「如」を斬る（秀吉への準備）
         else if (charJo.style.display !== 'none' && isColliding(draggedElement, charJo)) {
-            // 如を女と口に分割
             charJo.style.display = 'none';
             charOnna.style.display = 'inline-block';
             charKuchi.style.display = 'inline-block';
             
-            // 斬られ演出（左右に少しずれる）
             setTimeout(() => {
                 charOnna.style.transform = 'translateX(-15px) rotate(-15deg)';
                 charKuchi.style.transform = 'translateX(15px) rotate(15deg)';
@@ -327,12 +336,10 @@
 
             // 分割された「口」をドラッグ可能にする
             makeDraggable(charKuchi, (draggedKuchi) => {
-                // 口をホトトギスにドロップ（秀吉）
                 if (isColliding(draggedKuchi, bird)) {
                     gameActive = false;
                     clearTimeout(timerId);
                     
-                    // 「口」+「鳥（写真）」＝「鳴」
                     draggedKuchi.style.display = 'none';
                     bird.style.display = 'none';
                     kanjiNaku.style.display = 'block';
