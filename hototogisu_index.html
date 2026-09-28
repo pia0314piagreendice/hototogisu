@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不如帰診断</title>
+<style>
+    body {
+        font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+        background-color: #fdfaf5;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        user-select: none;
+    }
+
+    /* 上部：タイトル */
+    #title-area {
+        margin-top: 50px;
+        font-size: 36px;
+        font-weight: bold;
+        text-align: center;
+    }
+    ruby {
+        ruby-position: over;
+    }
+    #char-jo-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    #char-jo {
+        display: inline-block;
+    }
+    /* 切られた後の「女」と「口」 */
+    #char-onna, #char-kuchi {
+        display: none;
+        position: absolute;
+        top: 0;
+        transition: transform 0.5s;
+    }
+    #char-onna { left: 0; }
+    #char-kuchi { 
+        left: 50%;
+        cursor: grab; /* 口はドラッグ可能に */
+        z-index: 10;
+    }
+    #char-kuchi:active { cursor: grabbing; }
+
+    /* 中央：ホトトギスエリア */
+    #center-area {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 100%;
+    }
+    #bird {
+        font-size: 80px;
+        position: relative;
+    }
+    .bird-part {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: transform 0.6s ease-out, opacity 0.6s;
+    }
+    .bird-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
+    .bird-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
+    
+    .cut-left { transform: translateX(-60px) rotate(-20deg); opacity: 0; }
+    .cut-right { transform: translateX(60px) rotate(20deg); opacity: 0; }
+
+    #note {
+        position: absolute;
+        font-size: 40px;
+        top: -30px;
+        right: -30px;
+        opacity: 0;
+        transition: opacity 0.5s, transform 0.5s;
+    }
+    .singing {
+        opacity: 1 !important;
+        transform: translateY(-20px) rotate(15deg);
+    }
+
+    #kanji-naku {
+        display: none;
+        font-size: 100px;
+        font-weight: bold;
+    }
+
+    /* 下部：刀 */
+    #bottom-area {
+        height: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    #sword {
+        font-size: 60px;
+        cursor: grab;
+        position: absolute;
+        bottom: 50px;
+        z-index: 100;
+        transition: transform 0.1s;
+    }
+    #sword:active {
+        cursor: grabbing;
+    }
+
+    /* 結果表示 */
+    #result-text {
+        position: absolute;
+        top: 30%;
+        font-size: 40px;
+        font-weight: bold;
+        color: #d32f2f;
+        opacity: 0;
+        transition: opacity 1s;
+        pointer-events: none;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+</style>
+</head>
+<body>
+
+    <div id="title-area">
+        <ruby>不<rt>ホト</rt></ruby><span id="char-jo-wrapper"><span id="char-jo"><ruby>如<rt>トギ</rt></ruby></span><span id="char-onna">女</span><span id="char-kuchi">口</span></span><ruby>帰<rt>ス</rt></ruby>診断
+    </div>
+
+    <div id="center-area">
+        <div id="bird">
+            <span id="bird-whole">🐦</span>
+            <span class="bird-part bird-left" id="bird-l" style="display:none;">🐦</span>
+            <span class="bird-part bird-right" id="bird-r" style="display:none;">🐦</span>
+            <div id="note">🎵</div>
+        </div>
+        <div id="kanji-naku">鳴</div>
+    </div>
+
+    <div id="bottom-area">
+        <div id="sword">🗡️</div>
+    </div>
+
+    <div id="result-text"></div>
+
+<script>
+    // ===== ゲーム設定 =====
+    const WAIT_TIME = 120000; // 家康タイプ判定までの時間（120000ms = 2分）
+    // ※テスト時は 5000 (5秒) などに変更すると確認しやすくなります。
+
+    // ===== 要素の取得 =====
+    const sword = document.getElementById('sword');
+    const bird = document.getElementById('bird');
+    const birdWhole = document.getElementById('bird-whole');
+    const birdL = document.getElementById('bird-l');
+    const birdR = document.getElementById('bird-r');
+    const note = document.getElementById('note');
+    const kanjiNaku = document.getElementById('kanji-naku');
+    const charJo = document.getElementById('char-jo');
+    const charOnna = document.getElementById('char-onna');
+    const charKuchi = document.getElementById('char-kuchi');
+    const resultText = document.getElementById('result-text');
+
+    let gameActive = true;
+    let timerId;
+
+    // 家康タイマーの開始
+    function startIeyasuTimer() {
+        timerId = setTimeout(() => {
+            if (!gameActive) return;
+            gameActive = false;
+            // 鳴く演出
+            note.classList.add('singing');
+            showResult("あなたは家康タイプ！");
+        }, WAIT_TIME);
+    }
+    startIeyasuTimer();
+
+    // 結果表示関数
+    function showResult(text) {
+        resultText.innerText = text;
+        resultText.style.opacity = 1;
+        sword.style.display = 'none'; // 刀を隠す
+    }
+
+    // 重なり判定関数
+    function isColliding(el1, el2) {
+        const rect1 = el1.getBoundingClientRect();
+        const rect2 = el2.getBoundingClientRect();
+        return !(
+            rect1.top > rect2.bottom ||
+            rect1.right < rect2.left ||
+            rect1.bottom < rect2.top ||
+            rect1.left > rect2.right
+        );
+    }
+
+    // ドラッグ＆ドロップ機能を追加する関数
+    function makeDraggable(element, onDrop) {
+        let offsetX, offsetY;
+        let isDragging = false;
+        
+        // 初期位置を保存
+        const rect = element.getBoundingClientRect();
+        element.style.left = rect.left + 'px';
+        element.style.top = rect.top + 'px';
+        
+        element.addEventListener('pointerdown', (e) => {
+            if (!gameActive) return;
+            isDragging = true;
+            element.setPointerCapture(e.pointerId);
+            const currentRect = element.getBoundingClientRect();
+            offsetX = e.clientX - currentRect.left;
+            offsetY = e.clientY - currentRect.top;
+            element.style.position = 'absolute';
+            element.style.transform = 'scale(1.2)'; // 持ってる感
+        });
+
+        element.addEventListener('pointermove', (e) => {
+            if (!isDragging || !gameActive) return;
+            element.style.left = (e.clientX - offsetX) + 'px';
+            element.style.top = (e.clientY - offsetY) + 'px';
+        });
+
+        element.addEventListener('pointerup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            element.releasePointerCapture(e.pointerId);
+            element.style.transform = 'scale(1)';
+            if (gameActive && onDrop) {
+                onDrop(element);
+            }
+        });
+    }
+
+    // 刀のドラッグ設定
+    makeDraggable(sword, (draggedElement) => {
+        // 1. ホトトギスを斬る（信長）
+        if (isColliding(draggedElement, bird)) {
+            gameActive = false;
+            clearTimeout(timerId);
+            
+            // 斬られ演出
+            birdWhole.style.display = 'none';
+            birdL.style.display = 'block';
+            birdR.style.display = 'block';
+            
+            // 少し遅らせてアニメーション発火
+            setTimeout(() => {
+                birdL.classList.add('cut-left');
+                birdR.classList.add('cut-right');
+            }, 50);
+
+            showResult("あなたは信長タイプ！");
+        }
+        
+        // 2. 「如」を斬る（秀吉への準備）
+        else if (charJo.style.display !== 'none' && isColliding(draggedElement, charJo)) {
+            // 如を女と口に分割
+            charJo.style.display = 'none';
+            charOnna.style.display = 'inline-block';
+            charKuchi.style.display = 'inline-block';
+            
+            // 斬られ演出（左右に少しずれる）
+            setTimeout(() => {
+                charOnna.style.transform = 'translateX(-10px) rotate(-10deg)';
+                charKuchi.style.transform = 'translateX(10px) rotate(10deg)';
+            }, 50);
+
+            // 分割された「口」をドラッグ可能にする
+            makeDraggable(charKuchi, (draggedKuchi) => {
+                // 口をホトトギスにドロップ（秀吉）
+                if (isColliding(draggedKuchi, bird)) {
+                    gameActive = false;
+                    clearTimeout(timerId);
+                    
+                    // 「口」+「鳥」＝「鳴」
+                    draggedKuchi.style.display = 'none';
+                    bird.style.display = 'none';
+                    kanjiNaku.style.display = 'block';
+                    
+                    showResult("あなたは秀吉タイプ！");
+                }
+            });
+        }
+    });
+
+</script>
+</body>
+</html>
