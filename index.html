@@ -29,7 +29,6 @@
         z-index: 10;
         background: #2c3e50;
         color: #fdfdfd;
-        /* ルビの高さ分を考慮し、上部の余白を小さくして上下の隙間を均等に調整しました */
         padding: 8px 40px 15px;
         border: 2px solid #d4af37;
         border-radius: 8px;
@@ -359,7 +358,6 @@
         resultModal.classList.remove('show');
     });
 
-    // 引数に padding (当たり判定の大きさ) を追加し、動的に変更できるようにしました
     function isColliding(el1, el2, padding = 15) {
         const rect1 = el1.getBoundingClientRect();
         const rect2 = el2.getBoundingClientRect();
@@ -371,7 +369,6 @@
         );
     }
 
-    // ドラッグ時の現在座標をコールバックに渡すように機能拡張
     function makeDraggable(element, onDrop) {
         let currentX = 0, currentY = 0;
         let initialX, initialY;
@@ -408,7 +405,6 @@
     }
 
     makeDraggable(sword, (draggedElement) => {
-        // 1. 信長ルート
         if (isColliding(draggedElement, bird, 15)) {
             gameActive = false;
             clearTimeout(timerId);
@@ -429,7 +425,6 @@
                 showResult("あなたは信長タイプ！");
             }, 1000);
         }
-        // 2. 秀吉ルートの準備（如を斬る）
         else if (charJo.style.visibility !== 'hidden' && isColliding(draggedElement, charJo, 15)) {
             charJo.style.visibility = 'hidden';
             charOnna.style.display = 'inline-block';
@@ -443,21 +438,33 @@
                 charKuchi.style.transform = 'translateX(20px) rotate(15deg)';
             }, 50);
 
-            // 分割された「口」のドラッグ設定
             makeDraggable(charKuchi, (draggedKuchi, curX, curY) => {
-                // ★ 「口」用の当たり判定を大きく設定 (40) して吸い付きやすくしました
-                if (isColliding(draggedKuchi, bird, 40)) {
+                const bRect = bird.getBoundingClientRect();
+                const kRect = draggedKuchi.getBoundingClientRect();
+                
+                // ホトトギスと「口」の中心座標を計算
+                const kCenterX = kRect.left + kRect.width / 2;
+                const kCenterY = kRect.top + kRect.height / 2;
+                const bCenterX = bRect.left + bRect.width / 2;
+                const bCenterY = bRect.top + bRect.height / 2;
+
+                // 左側に配置した際の広い当たり判定を専用に作成
+                // 1. 口が鳥の中心より左に位置している
+                const isLeft = kCenterX < bCenterX;
+                // 2. 距離が離れすぎていない（左側250px以内）
+                const isNearX = (bCenterX - kCenterX) < 250; 
+                // 3. 高さが鳥の上下付近に収まっている
+                const isNearY = Math.abs(bCenterY - kCenterY) < 150;
+
+                // 触れていなくても、左側の近い空間に置けば合体処理を発火
+                if (isLeft && isNearX && isNearY) {
                     gameActive = false;
                     clearTimeout(timerId);
                     
-                    // 合体アニメーションのための準備
+                    // 合体する吸い込みアニメーション
                     draggedKuchi.style.transition = 'transform 0.4s ease-in, opacity 0.4s ease-in';
                     birdWhole.style.transition = 'transform 0.4s ease-in, opacity 0.4s ease-in';
                     
-                    const bRect = bird.getBoundingClientRect();
-                    const kRect = draggedKuchi.getBoundingClientRect();
-                    
-                    // 「口」がホトトギスの左側に吸い込まれるように移動
                     const moveX = (bRect.left + 20) - kRect.left;
                     const moveY = (bRect.top + (bRect.height / 2) - (kRect.height / 2)) - kRect.top;
                     
@@ -467,22 +474,21 @@
                     draggedKuchi.style.transform = `translate(${curX}px, ${curY}px) scale(1.5)`;
                     draggedKuchi.style.opacity = '0';
                     
-                    // ホトトギスも反応して少し右に動きながら消える
                     birdWhole.style.transform = 'translateX(20px) scale(0.9)';
                     birdWhole.style.opacity = '0';
                     
-                    // 合体して消えた直後に「鳴」を出現させる
+                    // 吸い込まれた直後に「鳴」フラッシュ演出
                     setTimeout(() => {
                         draggedKuchi.style.display = 'none';
                         bird.style.display = 'none';
                         kanjiNaku.style.display = 'block';
                         kanjiNaku.style.animation = 'combineAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
                         
-                        // 「鳴」のアニメーション(0.6秒)終了後、さらに1秒待って結果表示 (計1.6秒後)
+                        // アニメーション完了後、1秒余韻を残して結果表示 (計1.6秒後)
                         setTimeout(() => {
                             showResult("あなたは秀吉タイプ！");
                         }, 1600);
-                    }, 400); // 0.4秒かけて吸い込まれる
+                    }, 400); 
                 }
             });
         }
