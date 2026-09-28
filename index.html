@@ -12,17 +12,16 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center; /* 画面全体を中央に寄せる */
+        justify-content: center;
         height: 100vh;
         margin: 0;
-        gap: 20px; /* 要素間の隙間を詰める */
+        gap: 20px;
         overflow: hidden;
         user-select: none;
         -webkit-user-select: none;
         touch-action: none;
     }
 
-    /* 上部：タイトル */
     #title-area {
         font-size: 28px;
         font-weight: bold;
@@ -69,7 +68,6 @@
     }
     #char-kuchi:active { cursor: grabbing; }
 
-    /* 中央：ホトトギスエリア */
     #center-area {
         display: flex;
         justify-content: center;
@@ -78,7 +76,7 @@
     }
     #bird {
         position: relative;
-        width: 180px; /* 鳥も少しコンパクトに */
+        width: 180px;
         height: 180px;
     }
     
@@ -137,18 +135,17 @@
         text-shadow: 2px 2px 10px rgba(212, 175, 55, 0.4);
     }
 
-    /* 下部：刀とリセットボタン */
     #bottom-area {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px; /* 刀とボタンの隙間を詰める */
+        gap: 10px;
         z-index: 50;
         margin-top: 10px;
     }
     
     #sword {
-        width: 140px; /* 刀を適切なサイズに縮小 */
+        width: 140px;
         height: 140px;
         cursor: grab;
         position: relative;
@@ -171,7 +168,6 @@
     }
     #reset-btn:active { transform: scale(0.95); }
 
-    /* モーダルウインドウ */
     #result-modal {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -216,7 +212,6 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     #modal-close-btn:active { transform: scale(0.95); }
-
 </style>
 </head>
 <body>
@@ -237,7 +232,6 @@
 
     <div id="bottom-area">
         <div id="sword">
-            <!-- よりリアルでシャープな日本刀のベクターイラスト -->
             <svg viewBox="0 0 200 200" width="100%" height="100%" style="filter: drop-shadow(3px 3px 4px rgba(0,0,0,0.4));">
                 <defs>
                     <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -247,29 +241,14 @@
                     </linearGradient>
                 </defs>
                 <g transform="translate(35, 165) rotate(-45)">
-                    <!-- 柄（つか）の土台 -->
                     <rect x="0" y="-5" width="45" height="10" fill="#f8f9fa"/>
-                    
-                    <!-- 柄巻（つかまき：美しいひし形模様） -->
                     <path d="M0,-5 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10 m5,-10 l5,10" stroke="#111" stroke-width="1.5"/>
                     <path d="M5,-5 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10 m10,-10 l-5,10" stroke="#111" stroke-width="1.5"/>
-                    
-                    <!-- 柄頭（かしら） -->
                     <rect x="-4" y="-6" width="4" height="12" fill="#222" rx="1"/>
-                    
-                    <!-- 鍔（つば） -->
                     <rect x="45" y="-12" width="4" height="24" fill="#222" stroke="#d4af37" stroke-width="1" rx="1"/>
-                    
-                    <!-- 鎺（はばき） -->
                     <rect x="49" y="-5" width="6" height="10" fill="#d4af37"/>
-                    
-                    <!-- 刀身（棟から刃先にかけての美しい反り） -->
                     <path d="M 55 -5 Q 120 -15 180 -5 Q 192 -1 192 4 Q 120 -5 55 5 Z" fill="url(#bladeGrad)"/>
-                    
-                    <!-- 鎬（しのぎ：刀身の立体感を出す線） -->
                     <path d="M 55 0 Q 120 -7 185 -1" stroke="#94a3b8" stroke-width="0.5" fill="none"/>
-                    
-                    <!-- 刃文（はもん：波打つ模様） -->
                     <path d="M 55 2 Q 70 0 80 3 T 110 1 T 140 3 T 170 2" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.8"/>
                 </g>
             </svg>
@@ -277,7 +256,6 @@
         <button id="reset-btn" onclick="location.reload()">最初からやり直す</button>
     </div>
 
-    <!-- 結果表示モーダルウインドウ -->
     <div id="result-modal">
         <div class="modal-content">
             <div class="modal-title-text">＼ 診断結果 ／</div>
@@ -287,9 +265,8 @@
     </div>
 
 <script>
-    const WAIT_TIME = 120000; // 2分 (テスト時は5000などに変更してください)
+    const WAIT_TIME = 120000;
 
-    // ホトトギスのベクターイラスト生成
     const birdSVG = `
     <svg viewBox="0 0 200 200" width="100%" height="100%">
         <defs>
@@ -347,7 +324,12 @@
             gameActive = false;
             birdWhole.classList.add('singing-bird');
             note.classList.add('singing');
-            showResult("あなたは家康タイプ！");
+            sword.style.visibility = 'hidden'; 
+            
+            // 1秒待ってから結果表示
+            setTimeout(() => {
+                showResult("あなたは家康タイプ！");
+            }, 1000);
         }, WAIT_TIME);
     }
     startIeyasuTimer();
@@ -355,7 +337,6 @@
     function showResult(text) {
         modalText.innerText = text;
         resultModal.classList.add('show');
-        sword.style.visibility = 'hidden'; 
     }
 
     modalCloseBtn.addEventListener('click', () => {
@@ -417,16 +398,21 @@
             birdWhole.style.display = 'none';
             birdL.style.display = 'block';
             birdR.style.display = 'block';
+            sword.style.visibility = 'hidden'; 
             
             setTimeout(() => {
                 birdL.classList.add('cut-left');
                 birdR.classList.add('cut-right');
             }, 50);
 
-            showResult("あなたは信長タイプ！");
+            // 1秒待ってから結果表示
+            setTimeout(() => {
+                showResult("あなたは信長タイプ！");
+            }, 1000);
         }
-        else if (charJo.style.display !== 'none' && isColliding(draggedElement, charJo)) {
-            charJo.style.display = 'none';
+        else if (charJo.style.visibility !== 'hidden' && isColliding(draggedElement, charJo)) {
+            // タイトルの隙間を詰めないため、display: none ではなく visibility: hidden に変更
+            charJo.style.visibility = 'hidden';
             charOnna.style.display = 'inline-block';
             charKuchi.style.display = 'inline-block';
             
@@ -443,8 +429,12 @@
                     draggedKuchi.style.display = 'none';
                     bird.style.display = 'none';
                     kanjiNaku.style.display = 'block';
+                    sword.style.visibility = 'hidden';
                     
-                    showResult("あなたは秀吉タイプ！");
+                    // 1秒待ってから結果表示
+                    setTimeout(() => {
+                        showResult("あなたは秀吉タイプ！");
+                    }, 1000);
                 }
             });
         }
