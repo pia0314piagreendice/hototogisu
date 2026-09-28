@@ -45,8 +45,9 @@
     #char-onna { left: 0; }
     #char-kuchi { 
         left: 50%;
-        cursor: grab; /* 口はドラッグ可能に */
+        cursor: grab;
         z-index: 10;
+        color: #d32f2f; /* ドラッグできることが分かりやすいように色を変える */
     }
     #char-kuchi:active { cursor: grabbing; }
 
@@ -60,8 +61,17 @@
         width: 100%;
     }
     #bird {
-        font-size: 80px;
         position: relative;
+        width: 200px;
+        height: 200px;
+    }
+    #bird img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        pointer-events: none; /* 画像自体のドラッグを防ぐ */
     }
     .bird-part {
         position: absolute;
@@ -69,62 +79,103 @@
         left: 0;
         transition: transform 0.6s ease-out, opacity 0.6s;
     }
+    /* 写真を左右に分割するクリップパス */
     .bird-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
     .bird-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
     
-    .cut-left { transform: translateX(-60px) rotate(-20deg); opacity: 0; }
-    .cut-right { transform: translateX(60px) rotate(20deg); opacity: 0; }
+    .cut-left { transform: translateX(-80px) rotate(-15deg); opacity: 0; }
+    .cut-right { transform: translateX(80px) rotate(15deg); opacity: 0; }
 
+    /* 鳴き声の吹き出し */
     #note {
         position: absolute;
-        font-size: 40px;
-        top: -30px;
-        right: -30px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #ff4081;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ff4081;
+        padding: 10px 15px;
+        border-radius: 30px;
+        top: -20px;
+        right: -80px;
         opacity: 0;
         transition: opacity 0.5s, transform 0.5s;
+        white-space: nowrap;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    #note::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 20px;
+        border-width: 10px 10px 0;
+        border-style: solid;
+        border-color: #ff4081 transparent transparent transparent;
+        display: block;
+        width: 0;
     }
     .singing {
         opacity: 1 !important;
-        transform: translateY(-20px) rotate(15deg);
+        transform: translateY(-10px) rotate(5deg);
     }
 
     #kanji-naku {
         display: none;
-        font-size: 100px;
+        font-size: 150px;
         font-weight: bold;
+        color: #333;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     }
 
-    /* 下部：刀 */
+    /* 下部：刀とリセットボタン */
     #bottom-area {
-        height: 150px;
+        position: absolute;
+        bottom: 30px;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
+        gap: 30px;
         width: 100%;
     }
     #sword {
-        font-size: 60px;
+        font-size: 70px;
         cursor: grab;
-        position: absolute;
-        bottom: 50px;
+        position: relative;
         z-index: 100;
         transition: transform 0.1s;
+        filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
     }
     #sword:active {
         cursor: grabbing;
     }
 
+    #reset-btn {
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: #555;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        transition: background-color 0.2s, transform 0.1s;
+    }
+    #reset-btn:hover { background-color: #333; }
+    #reset-btn:active { transform: scale(0.95); }
+
     /* 結果表示 */
     #result-text {
         position: absolute;
-        top: 30%;
-        font-size: 40px;
+        top: 25%;
+        font-size: 45px;
         font-weight: bold;
         color: #d32f2f;
         opacity: 0;
         transition: opacity 1s;
         pointer-events: none;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 2px 2px 5px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.8);
+        z-index: 50;
     }
 </style>
 </head>
@@ -136,19 +187,21 @@
 
     <div id="center-area">
         <div id="bird">
-            <span id="bird-whole">🐦</span>
-            <span class="bird-part bird-left" id="bird-l" style="display:none;">🐦</span>
-            <span class="bird-part bird-right" id="bird-r" style="display:none;">🐦</span>
-            <div id="note">🎵</div>
+            <!-- Wikimedia Commonsのホトトギスの写真を使用 -->
+            <img id="bird-whole" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Cuculus_poliocephalus.jpg/320px-Cuculus_poliocephalus.jpg" alt="ホトトギス">
+            <img class="bird-part bird-left" id="bird-l" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Cuculus_poliocephalus.jpg/320px-Cuculus_poliocephalus.jpg" style="display:none;" alt="ホトトギス左半身">
+            <img class="bird-part bird-right" id="bird-r" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Cuculus_poliocephalus.jpg/320px-Cuculus_poliocephalus.jpg" style="display:none;" alt="ホトトギス右半身">
+            <div id="note">ホーホケキョ♪</div>
         </div>
         <div id="kanji-naku">鳴</div>
     </div>
 
+    <div id="result-text"></div>
+
     <div id="bottom-area">
         <div id="sword">🗡️</div>
+        <button id="reset-btn" onclick="location.reload()">リセット</button>
     </div>
-
-    <div id="result-text"></div>
 
 <script>
     // ===== ゲーム設定 =====
@@ -176,7 +229,7 @@
         timerId = setTimeout(() => {
             if (!gameActive) return;
             gameActive = false;
-            // 鳴く演出
+            // 鳴く演出（吹き出し表示）
             note.classList.add('singing');
             showResult("あなたは家康タイプ！");
         }, WAIT_TIME);
@@ -207,11 +260,6 @@
         let offsetX, offsetY;
         let isDragging = false;
         
-        // 初期位置を保存
-        const rect = element.getBoundingClientRect();
-        element.style.left = rect.left + 'px';
-        element.style.top = rect.top + 'px';
-        
         element.addEventListener('pointerdown', (e) => {
             if (!gameActive) return;
             isDragging = true;
@@ -219,8 +267,11 @@
             const currentRect = element.getBoundingClientRect();
             offsetX = e.clientX - currentRect.left;
             offsetY = e.clientY - currentRect.top;
+            
+            // 自由移動できるように絶対配置へ変更
             element.style.position = 'absolute';
-            element.style.transform = 'scale(1.2)'; // 持ってる感
+            element.style.transform = 'scale(1.2)'; // 掴んでいる感を強調
+            element.style.zIndex = 1000;
         });
 
         element.addEventListener('pointermove', (e) => {
@@ -247,12 +298,12 @@
             gameActive = false;
             clearTimeout(timerId);
             
-            // 斬られ演出
+            // 写真の斬られ演出
             birdWhole.style.display = 'none';
             birdL.style.display = 'block';
             birdR.style.display = 'block';
             
-            // 少し遅らせてアニメーション発火
+            // アニメーション発火
             setTimeout(() => {
                 birdL.classList.add('cut-left');
                 birdR.classList.add('cut-right');
@@ -270,8 +321,8 @@
             
             // 斬られ演出（左右に少しずれる）
             setTimeout(() => {
-                charOnna.style.transform = 'translateX(-10px) rotate(-10deg)';
-                charKuchi.style.transform = 'translateX(10px) rotate(10deg)';
+                charOnna.style.transform = 'translateX(-15px) rotate(-15deg)';
+                charKuchi.style.transform = 'translateX(15px) rotate(15deg)';
             }, 50);
 
             // 分割された「口」をドラッグ可能にする
@@ -281,7 +332,7 @@
                     gameActive = false;
                     clearTimeout(timerId);
                     
-                    // 「口」+「鳥」＝「鳴」
+                    // 「口」+「鳥（写真）」＝「鳴」
                     draggedKuchi.style.display = 'none';
                     bird.style.display = 'none';
                     kanjiNaku.style.display = 'block';
