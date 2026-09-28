@@ -86,13 +86,15 @@
     }
     .bird-part {
         position: absolute; top: 0; left: 0;
-        transition: transform 0.6s ease-out, opacity 0.6s;
+        transition: transform 0.6s ease-out;
     }
     
     .bird-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
     .bird-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
-    .cut-left { transform: translateX(-50px) rotate(-15deg); opacity: 0; }
-    .cut-right { transform: translateX(50px) rotate(15deg); opacity: 0; }
+    
+    /* 斬られた後、透明になって消えないように opacity: 0; を削除しました */
+    .cut-left { transform: translateX(-50px) rotate(-15deg); }
+    .cut-right { transform: translateX(50px) rotate(15deg); }
 
     .singing-bird .beak-closed { display: none !important; }
     .singing-bird .beak-open { display: block !important; }
@@ -151,7 +153,7 @@
         position: relative;
         z-index: 200;
         padding: 5px;
-        transition: opacity 0.3s; /* 消えるときのアニメーション */
+        transition: opacity 0.3s;
     }
     #sword:active { cursor: grabbing; }
 
@@ -266,7 +268,7 @@
     </div>
 
 <script>
-    const WAIT_TIME = 120000;
+    const WAIT_TIME = 120000; // 2分
 
     const birdSVG = `
     <svg viewBox="0 0 200 200" width="100%" height="100%">
@@ -325,7 +327,7 @@
             gameActive = false;
             birdWhole.classList.add('singing-bird');
             note.classList.add('singing');
-            sword.style.opacity = '0'; // フェードアウトさせる
+            sword.style.opacity = '0'; 
             setTimeout(() => { sword.style.visibility = 'hidden'; }, 300);
             
             setTimeout(() => {
@@ -383,7 +385,7 @@
             if (!isDragging) return;
             isDragging = false;
             element.releasePointerCapture(e.pointerId);
-            element.style.transition = 'opacity 0.3s'; // 刀が消える時のために元に戻す
+            element.style.transition = 'opacity 0.3s'; 
             element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
             if (gameActive && onDrop) {
                 onDrop(element);
@@ -392,7 +394,6 @@
     }
 
     makeDraggable(sword, (draggedElement) => {
-        // 1. 信長ルート（ホトトギスを直接斬る）
         if (isColliding(draggedElement, bird)) {
             gameActive = false;
             clearTimeout(timerId);
@@ -401,7 +402,6 @@
             birdL.style.display = 'block';
             birdR.style.display = 'block';
             
-            // 刀を消去
             sword.style.opacity = '0';
             setTimeout(() => { sword.style.visibility = 'hidden'; }, 300);
             
@@ -414,13 +414,11 @@
                 showResult("あなたは信長タイプ！");
             }, 1000);
         }
-        // 2. 秀吉ルート準備（「如」を斬る）
         else if (charJo.style.visibility !== 'hidden' && isColliding(draggedElement, charJo)) {
             charJo.style.visibility = 'hidden';
             charOnna.style.display = 'inline-block';
             charKuchi.style.display = 'inline-block';
             
-            // ★追加：如を斬ったら刀は消滅する
             sword.style.opacity = '0';
             setTimeout(() => { sword.style.visibility = 'hidden'; }, 300);
             
