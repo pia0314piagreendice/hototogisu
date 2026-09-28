@@ -29,8 +29,8 @@
         z-index: 10;
         background: #2c3e50;
         color: #fdfdfd;
-        /* ルビが溢れないように上の余白（padding-top）を30pxに広げています */
-        padding: 30px 40px 20px;
+        /* 余白を調整し、ルビが収まりつつ違和感のない広さにしました */
+        padding: 25px 40px 15px;
         border: 2px solid #d4af37;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -59,7 +59,7 @@
     #char-onna, #char-kuchi {
         display: none;
         position: absolute;
-        bottom: 0; /* 元の文字の下端にぴったり合わせる */
+        bottom: 0;
         transition: transform 0.5s;
     }
     #char-onna { left: 0; }
@@ -68,13 +68,10 @@
         left: 50%;
         cursor: grab;
         z-index: 100;
-        color: #ff5252;
-        text-shadow: 0 0 10px rgba(255, 82, 82, 0.8);
+        /* 赤色の発光エフェクトを削除し、他の文字と同じ自然な色にしました */
     }
     #char-kuchi:active { cursor: grabbing; }
 
-    /* スマホでタッチしやすくするための透明な当たり判定 */
-    /* 今回は枠外なので、枠を押し広げるバグは起きません */
     #char-kuchi::after {
         content: '';
         position: absolute;
@@ -231,11 +228,6 @@
 <body>
 
     <div id="title-area">
-        <!-- 
-            ★ 修正ポイント ★
-            rubyタグの中から「女」と「口」を外に出しました。
-            これで文字が動いても、rubyタグ自体は拡張されず、枠が伸びなくなります！
-        -->
         <ruby>不<rt>ホト</rt></ruby><span id="char-jo-wrapper"><ruby><span id="char-jo">如</span><rt>トギ</rt></ruby><span id="char-onna">女</span><span id="char-kuchi">口</span></span><ruby>帰<rt>ス</rt></ruby>診断
     </div>
 
