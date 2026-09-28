@@ -44,7 +44,7 @@
         display: none;
         position: absolute;
         top: 0;
-        transition: transform 0.5s; /* 分割時のアニメーション */
+        transition: transform 0.5s;
     }
     #char-onna { left: 0; }
     #char-kuchi { 
@@ -68,8 +68,8 @@
     }
     #bird {
         position: relative;
-        width: 200px;
-        height: 200px;
+        width: 220px;
+        height: 220px;
     }
     
     /* 鳥のSVGコンテナ */
@@ -88,8 +88,8 @@
     /* ホトトギスを左右に分割するクリップパス */
     .bird-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
     .bird-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
-    .cut-left { transform: translateX(-50px) rotate(-15deg); opacity: 0; }
-    .cut-right { transform: translateX(50px) rotate(15deg); opacity: 0; }
+    .cut-left { transform: translateX(-60px) rotate(-15deg); opacity: 0; }
+    .cut-right { transform: translateX(60px) rotate(15deg); opacity: 0; }
 
     /* 鳴き声とクチバシの開閉設定 */
     .singing-bird .beak-closed { display: none !important; }
@@ -104,8 +104,8 @@
         border: 2px solid #ff4081;
         padding: 8px 12px;
         border-radius: 20px;
-        top: -10px;
-        right: -80px;
+        top: 0px;
+        right: -60px;
         opacity: 0;
         transition: opacity 0.5s, transform 0.5s;
         white-space: nowrap;
@@ -147,12 +147,12 @@
         z-index: 50;
     }
     #sword {
-        width: 120px;
-        height: 120px;
+        width: 160px;
+        height: 160px;
         cursor: grab;
         position: relative;
         z-index: 200;
-        padding: 20px; /* スマホでタッチしやすくする */
+        padding: 20px; 
         margin: -20px;
     }
     #sword:active {
@@ -210,22 +210,43 @@
 
     <div id="bottom-area">
         <div id="sword">
-            <!-- 日本刀のベクターイラスト（SVG） -->
-            <svg viewBox="0 0 200 200" width="100%" height="100%" style="filter: drop-shadow(3px 3px 4px rgba(0,0,0,0.4));">
-                <g transform="translate(100, 100) rotate(-45) translate(-100, -100)">
-                    <!-- 柄（つか） -->
-                    <rect x="94" y="110" width="12" height="45" rx="2" fill="#1a1a1a"/>
-                    <!-- 柄巻（つかまき：ひし形模様） -->
-                    <path d="M 94 115 L 106 120 M 94 125 L 106 130 M 94 135 L 106 140 M 94 145 L 106 150" stroke="#DAA520" stroke-width="1.5" />
+            <!-- リアルな日本刀（打刀）のベクターイラスト -->
+            <svg viewBox="0 0 200 200" width="100%" height="100%" style="filter: drop-shadow(4px 4px 5px rgba(0,0,0,0.4));">
+                <defs>
+                    <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#f8f9fa"/>
+                        <stop offset="40%" stop-color="#ced4da"/>
+                        <stop offset="100%" stop-color="#6c757d"/>
+                    </linearGradient>
+                </defs>
+                <g transform="rotate(-35 100 100)">
+                    <!-- 柄頭（かしら） -->
+                    <rect x="18" y="92" width="8" height="16" rx="3" fill="#212529" stroke="#d4af37" stroke-width="1"/>
+                    
+                    <!-- 柄（つか）と鮫肌（さめがわ） -->
+                    <rect x="25" y="93" width="45" height="14" fill="#f8f9fa"/>
+                    <circle cx="30" cy="96" r="0.8" fill="#333"/><circle cx="35" cy="104" r="0.8" fill="#333"/><circle cx="40" cy="98" r="0.8" fill="#333"/><circle cx="50" cy="95" r="0.8" fill="#333"/><circle cx="55" cy="103" r="0.8" fill="#333"/>
+                    
+                    <!-- 柄巻（つかまき：菱形の紐飾り） -->
+                    <path d="M 25 93 L 32 100 L 25 107 M 32 93 L 39 100 L 32 107 M 39 93 L 46 100 L 39 107 M 46 93 L 53 100 L 46 107 M 53 93 L 60 100 L 53 107 M 60 93 L 67 100 L 60 107" stroke="#212529" stroke-width="2" fill="none"/>
+                    <path d="M 25 107 L 32 100 L 25 93 M 32 107 L 39 100 L 32 93 M 39 107 L 46 100 L 39 93 M 46 107 L 53 100 L 46 93 M 53 107 L 60 100 L 53 93 M 60 107 L 67 100 L 60 93" stroke="#212529" stroke-width="2" fill="none"/>
+                    
                     <!-- 鍔（つば） -->
-                    <rect x="88" y="106" width="24" height="5" rx="1" fill="#333" stroke="#DAA520" stroke-width="1"/>
-                    <!-- 鎺（はばき） -->
-                    <rect x="95" y="98" width="10" height="8" fill="#DAA520"/>
-                    <!-- 刀身（刃） -->
-                    <path d="M 95 98 Q 105 40 105 10 Q 112 40 105 98 Z" fill="#E2E8F0"/>
-                    <!-- 刃文・しのぎ -->
-                    <path d="M 95 98 Q 105 40 105 10" stroke="#FFF" stroke-width="2" fill="none"/>
-                    <path d="M 101 98 Q 108 40 105 10" stroke="#CBD5E1" stroke-width="1" fill="none"/>
+                    <rect x="68" y="84" width="5" height="32" rx="2" fill="#212529" stroke="#d4af37" stroke-width="1.5"/>
+                    
+                    <!-- 鎺（はばき：刀身の根本の金具） -->
+                    <rect x="73" y="93" width="10" height="14" fill="#d4af37"/>
+                    <line x1="75" y1="93" x2="81" y2="107" stroke="#b5952f" stroke-width="1"/>
+                    <line x1="78" y1="93" x2="83" y2="107" stroke="#b5952f" stroke-width="1"/>
+                    
+                    <!-- 刀身（反りのある美しい刃） -->
+                    <path d="M 83 106 Q 140 114 185 98 C 188 95 186 92 180 90 Q 140 76 83 94 Z" fill="url(#bladeGrad)"/>
+                    
+                    <!-- 刃文（はもん：波打つ模様） -->
+                    <path d="M 83 101 Q 95 96 105 103 T 125 98 T 145 102 T 165 94 T 182 93" stroke="#ffffff" stroke-width="2.5" fill="none" opacity="0.8"/>
+                    
+                    <!-- 鎬（しのぎ：刀身の稜線） -->
+                    <path d="M 83 99 Q 140 90 182 92" stroke="#adb5bd" stroke-width="1" fill="none"/>
                 </g>
             </svg>
         </div>
@@ -236,41 +257,61 @@
     // ===== ゲーム設定 =====
     const WAIT_TIME = 120000; // 2分 (テスト時は5000などに変更してください)
 
-    // ===== ホトトギスのベクターイラストを生成 =====
-    // ※画像が壊れないように、直接コードで絵を描画します
+    // ===== リアルなホトトギスのベクターイラスト生成 =====
+    // ※灰色と白のコントラスト、お腹の縞模様、黄色いアイリングが特徴です
     const birdSVG = `
     <svg viewBox="0 0 200 200" width="100%" height="100%">
-        <g transform="translate(10, 15)">
-            <!-- 尾羽 -->
-            <path d="M 130 110 Q 170 150 180 170 Q 150 160 110 140 Z" fill="#5A636A"/>
-            <!-- お腹 -->
-            <ellipse cx="90" cy="110" rx="45" ry="35" fill="#f4f4f4" />
-            <path d="M 65 125 Q 90 135 115 125 M 60 135 Q 90 145 120 135" stroke="#444" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <!-- 背中・頭 -->
-            <path d="M 120 130 C 130 70 90 50 60 60 C 40 66 40 85 50 100 C 70 110 100 140 120 130 Z" fill="#5A636A"/>
-            <!-- 目 -->
-            <circle cx="60" cy="75" r="4.5" fill="#111"/>
-            <circle cx="60" cy="75" r="7" fill="none" stroke="#F39C12" stroke-width="2"/>
-            <!-- 翼 -->
-            <path d="M 85 85 C 110 85 125 110 105 130 C 85 120 75 100 85 85 Z" fill="#40484D"/>
-            <!-- 足 -->
-            <path d="M 80 143 L 70 175 M 100 143 L 105 175" stroke="#F39C12" stroke-width="3" stroke-linecap="round"/>
-            <path d="M 65 175 L 75 175 M 100 175 L 110 175" stroke="#F39C12" stroke-width="3" stroke-linecap="round"/>
-            
-            <!-- クチバシ（閉） -->
-            <path class="beak-closed" d="M 45 75 L 10 78 L 45 83 Z" fill="#222" stroke="#222" stroke-linejoin="round"/>
-            <!-- クチバシ（開：歌う時のみ表示） -->
-            <path class="beak-open" d="M 45 73 L 10 60 L 40 77 Z M 45 83 L 10 95 L 40 81 Z" fill="#222" stroke="#222" stroke-linejoin="round" style="display:none;"/>
+        <defs>
+            <clipPath id="birdClip">
+                <path d="M 45 80 C 50 45, 80 40, 100 50 C 120 60, 140 80, 155 95 C 130 135, 80 150, 45 125 C 30 110, 35 90, 45 80 Z" />
+            </clipPath>
+        </defs>
+        
+        <!-- 尾羽 -->
+        <path d="M 140 90 L 195 115 L 185 130 L 130 110 Z" fill="#444d56"/>
+        <path d="M 145 100 L 195 125 L 185 135 L 135 115 Z" fill="#363c43"/>
+        
+        <!-- 足 -->
+        <path d="M 80 140 L 75 170 L 65 175 M 75 170 L 85 175" stroke="#d49a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M 100 135 L 95 165 L 85 170 M 95 165 L 105 170" stroke="#d49a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        
+        <!-- お腹のベース（白） -->
+        <path d="M 45 80 C 50 45, 80 40, 100 50 C 120 60, 140 80, 155 95 C 130 135, 80 150, 45 125 C 30 110, 35 90, 45 80 Z" fill="#ffffff"/>
+        
+        <!-- ホトトギスの特徴的なお腹の縞模様 -->
+        <g clip-path="url(#birdClip)">
+            <path d="M 30 95 Q 80 120 150 95" stroke="#333" stroke-width="2.5" fill="none"/>
+            <path d="M 30 105 Q 80 130 150 105" stroke="#333" stroke-width="2.5" fill="none"/>
+            <path d="M 30 115 Q 80 140 150 115" stroke="#333" stroke-width="2.5" fill="none"/>
+            <path d="M 30 125 Q 80 150 150 125" stroke="#333" stroke-width="2.5" fill="none"/>
+            <path d="M 40 135 Q 80 160 140 135" stroke="#333" stroke-width="2.5" fill="none"/>
         </g>
+        
+        <!-- 背中と頭（灰色） -->
+        <path d="M 45 80 C 50 45, 80 40, 100 50 C 120 60, 140 80, 155 95 C 130 90, 90 85, 45 80 Z" fill="#6c7782"/>
+        
+        <!-- 翼 -->
+        <path d="M 90 75 C 110 75, 135 95, 150 120 C 125 110, 100 95, 90 75 Z" fill="#525b64"/>
+        
+        <!-- 黄色いアイリングと目 -->
+        <circle cx="60" cy="65" r="3.5" fill="#111"/>
+        <circle cx="60" cy="65" r="5" fill="none" stroke="#f1c40f" stroke-width="2"/>
+        
+        <!-- クチバシ（閉） -->
+        <path class="beak-closed" d="M 45 72 L 15 76 L 45 82 Z" fill="#333"/>
+        
+        <!-- クチバシ（開） -->
+        <path class="beak-open" d="M 45 72 L 15 62 L 38 75 Z M 45 82 L 15 92 L 40 80 Z" fill="#333" style="display:none;"/>
+        <path class="beak-open" d="M 38 75 L 15 77 L 40 80 Z" fill="#c0392b" style="display:none;"/> <!-- 口の中 -->
     </svg>
     `;
     
-    // 鳥のイラストをそれぞれの要素に流し込む
+    // 鳥のイラストを要素に流し込む
     document.getElementById('bird-whole').innerHTML = birdSVG;
     document.getElementById('bird-l').innerHTML = birdSVG;
     document.getElementById('bird-r').innerHTML = birdSVG;
 
-    // ===== 要素の取得 =====
+    // ===== ゲームロジック =====
     const sword = document.getElementById('sword');
     const bird = document.getElementById('bird');
     const birdWhole = document.getElementById('bird-whole');
@@ -286,13 +327,11 @@
     let gameActive = true;
     let timerId;
 
-    // 家康タイマーの開始
+    // 家康タイマー
     function startIeyasuTimer() {
         timerId = setTimeout(() => {
             if (!gameActive) return;
             gameActive = false;
-            
-            // クチバシを開いて鳴く演出
             birdWhole.classList.add('singing-bird');
             note.classList.add('singing');
             showResult("あなたは家康タイプ！");
@@ -300,14 +339,12 @@
     }
     startIeyasuTimer();
 
-    // 結果表示関数
     function showResult(text) {
         resultText.innerText = text;
         resultText.style.opacity = 1;
         sword.style.visibility = 'hidden'; 
     }
 
-    // 重なり判定関数
     function isColliding(el1, el2) {
         const rect1 = el1.getBoundingClientRect();
         const rect2 = el2.getBoundingClientRect();
@@ -330,14 +367,12 @@
             if (!gameActive) return;
             isDragging = true;
             element.setPointerCapture(e.pointerId);
-            
-            // ★ポイント: ドラッグ遅延を解消するため、掴んだ瞬間にアニメーション(transition)をオフにする
             element.style.transition = 'none';
 
             initialX = e.clientX - currentX;
             initialY = e.clientY - currentY;
             
-            element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.2)`;
+            element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.1)`;
             element.style.zIndex = 1000;
         });
 
@@ -345,17 +380,14 @@
             if (!isDragging || !gameActive) return;
             currentX = e.clientX - initialX;
             currentY = e.clientY - initialY;
-            element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.2)`;
+            element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.1)`;
         });
 
         element.addEventListener('pointerup', (e) => {
             if (!isDragging) return;
             isDragging = false;
             element.releasePointerCapture(e.pointerId);
-            
-            // アニメーション設定を元に戻す
             element.style.transition = '';
-            
             element.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
             if (gameActive && onDrop) {
                 onDrop(element);
@@ -365,7 +397,7 @@
 
     // 刀のドラッグ設定
     makeDraggable(sword, (draggedElement) => {
-        // 1. ホトトギスを斬る（信長）
+        // 1. 信長ルート（鳥を斬る）
         if (isColliding(draggedElement, bird)) {
             gameActive = false;
             clearTimeout(timerId);
@@ -382,13 +414,12 @@
             showResult("あなたは信長タイプ！");
         }
         
-        // 2. 「如」を斬る（秀吉への準備）
+        // 2. 秀吉ルートの準備（「如」を斬る）
         else if (charJo.style.display !== 'none' && isColliding(draggedElement, charJo)) {
             charJo.style.display = 'none';
             charOnna.style.display = 'inline-block';
             charKuchi.style.display = 'inline-block';
             
-            // 斬られたときに少しズレる演出
             setTimeout(() => {
                 charOnna.style.transform = 'translateX(-15px) rotate(-15deg)';
                 charKuchi.style.transform = 'translateX(15px) rotate(15deg)';
@@ -396,6 +427,7 @@
 
             // 分割された「口」をドラッグ可能にする
             makeDraggable(charKuchi, (draggedKuchi) => {
+                // 口を鳥に重ねる
                 if (isColliding(draggedKuchi, bird)) {
                     gameActive = false;
                     clearTimeout(timerId);
