@@ -23,24 +23,26 @@
     }
 
     #title-area {
-        font-size: 28px;
+        /* フォントサイズを28pxから1.5倍の42pxに拡大 */
+        font-size: 42px;
         font-weight: bold;
         text-align: center;
         z-index: 10;
         background: #2c3e50;
         color: #fdfdfd;
-        padding: 10px 30px;
+        /* 文字の拡大に合わせて枠の余白も少し調整 */
+        padding: 15px 40px;
         border: 2px solid #d4af37;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         position: relative;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
     #title-area::before {
         content: '';
         position: absolute;
-        top: 3px; left: 3px; right: 3px; bottom: 3px;
+        top: 4px; left: 4px; right: 4px; bottom: 4px;
         border: 1px solid #d4af37;
         border-radius: 4px;
         pointer-events: none;
@@ -145,12 +147,12 @@
     }
     
     #sword {
-        width: 140px;
-        height: 140px;
+        width: 94px;
+        height: 94px;
         cursor: grab;
         position: relative;
         z-index: 200;
-        padding: 10px;
+        padding: 5px;
     }
     #sword:active { cursor: grabbing; }
 
@@ -326,7 +328,6 @@
             note.classList.add('singing');
             sword.style.visibility = 'hidden'; 
             
-            // 1秒待ってから結果表示
             setTimeout(() => {
                 showResult("あなたは家康タイプ！");
             }, 1000);
@@ -346,7 +347,7 @@
     function isColliding(el1, el2) {
         const rect1 = el1.getBoundingClientRect();
         const rect2 = el2.getBoundingClientRect();
-        const padding = 20;
+        const padding = 15; 
         return !(
             rect1.top + padding > rect2.bottom ||
             rect1.right - padding < rect2.left ||
@@ -405,13 +406,11 @@
                 birdR.classList.add('cut-right');
             }, 50);
 
-            // 1秒待ってから結果表示
             setTimeout(() => {
                 showResult("あなたは信長タイプ！");
             }, 1000);
         }
         else if (charJo.style.visibility !== 'hidden' && isColliding(draggedElement, charJo)) {
-            // タイトルの隙間を詰めないため、display: none ではなく visibility: hidden に変更
             charJo.style.visibility = 'hidden';
             charOnna.style.display = 'inline-block';
             charKuchi.style.display = 'inline-block';
@@ -431,7 +430,6 @@
                     kanjiNaku.style.display = 'block';
                     sword.style.visibility = 'hidden';
                     
-                    // 1秒待ってから結果表示
                     setTimeout(() => {
                         showResult("あなたは秀吉タイプ！");
                     }, 1000);
