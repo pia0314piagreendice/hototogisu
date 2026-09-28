@@ -29,13 +29,15 @@
         z-index: 10;
         background: #2c3e50;
         color: #fdfdfd;
-        padding: 15px 40px;
+        /* ルビが溢れないように上部のパディングを増やし、バランスを調整 */
+        padding: 30px 40px 20px; 
         border: 2px solid #d4af37;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         position: relative;
         margin-bottom: 15px;
+        line-height: 1.2;
     }
     #title-area::before {
         content: '';
@@ -63,10 +65,16 @@
         z-index: 100;
         color: #ff5252;
         text-shadow: 0 0 10px rgba(255, 82, 82, 0.8);
-        padding: 20px;
-        margin: -20px; 
+        /* レイアウトを崩す原因だった padding と margin を削除しました */
     }
     #char-kuchi:active { cursor: grabbing; }
+
+    /* レイアウトを崩さずに、「口」の当たり判定（タッチできる範囲）だけを広げるための設定 */
+    #char-kuchi::after {
+        content: '';
+        position: absolute;
+        top: -20px; left: -20px; right: -20px; bottom: -20px;
+    }
 
     #center-area {
         display: flex;
@@ -218,7 +226,6 @@
 <body>
 
     <div id="title-area">
-        <!-- ★修正ポイント: 「如」を包むラッパーをrubyベースにし、「トギ」を独立させました -->
         <ruby>不<rt>ホト</rt></ruby><ruby><span id="char-jo-wrapper"><span id="char-jo">如</span><span id="char-onna">女</span><span id="char-kuchi">口</span></span><rt>トギ</rt></ruby><ruby>帰<rt>ス</rt></ruby>診断
     </div>
 
