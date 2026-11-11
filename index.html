@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>不如帰診断</title>
+
+<!-- ★ X(Twitter)などのSNSでシェアされた時に画像を表示するための設定 -->
+<meta property="og:title" content="不如帰診断">
+<meta property="og:description" content="あなたは信長？秀吉？家康？ホトトギスでわかるあなたのタイプ！">
+<meta property="og:url" content="https://pia0314piagreendice.github.io/hototogisu/">
+<meta property="og:image" content="https://pia0314piagreendice.github.io/hototogisu/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+
 <style>
     body {
         font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
@@ -12,13 +20,15 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        min-height: 100vh;
+        /* 全体を画面内に均等配置する */
+        justify-content: space-between;
+        height: 100vh;
+        height: 100dvh; 
         margin: 0;
-        padding: 3vh 15px 4vh;
+        /* 上下の余白を最低限に設定 */
+        padding: 2vh 10px;
         box-sizing: border-box;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: hidden; /* スクロールを禁止して1画面に固定 */
         user-select: none;
         -webkit-user-select: none;
         touch-action: manipulation;
@@ -26,19 +36,21 @@
 
     #title-area {
         flex-shrink: 0;
-        font-size: 52px; 
+        /* 画面幅に合わせて文字サイズを自動調整 */
+        font-size: min(10vw, 42px); 
         font-weight: bold;
         text-align: center;
         z-index: 10;
         background: #2c3e50;
         color: #fdfdfd;
-        padding: 10px 50px 18px;
+        padding: 8px 30px 12px;
         border: 2px solid #d4af37;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         position: relative;
         line-height: 1.2;
+        margin-top: 2vh;
     }
     #title-area::before {
         content: '';
@@ -88,8 +100,9 @@
     
     #bird {
         position: relative;
-        width: 260px;
-        height: 260px;
+        /* 画面の縦横比率に合わせて鳥のサイズを最大化（はみ出さないサイズ） */
+        width: min(60vw, 35vh, 260px);
+        height: min(60vw, 35vh, 260px);
     }
     
     .bird-svg-container {
@@ -111,14 +124,14 @@
 
     #note {
         position: absolute;
-        font-size: 22px; 
+        font-size: min(5vw, 22px);
         font-weight: bold;
         color: #ff4081;
         background: rgba(255, 255, 255, 0.95);
         border: 2px solid #ff4081;
-        padding: 8px 14px;
-        border-radius: 24px;
-        top: -15px; right: -80px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        top: -15px; right: -20%;
         opacity: 0;
         transition: opacity 0.5s, transform 0.5s;
         white-space: nowrap;
@@ -126,8 +139,8 @@
     }
     #note::after {
         content: ''; position: absolute;
-        bottom: -10px; left: 25px;
-        border-width: 10px 10px 0;
+        bottom: -8px; left: 20px;
+        border-width: 8px 8px 0;
         border-style: solid;
         border-color: #ff4081 transparent transparent transparent;
         display: block; width: 0;
@@ -139,7 +152,7 @@
 
     #kanji-naku {
         display: none;
-        font-size: 200px; 
+        font-size: min(50vw, 25vh, 200px);
         font-weight: bold;
         background: linear-gradient(to bottom, #d4af37, #b8860b);
         -webkit-background-clip: text;
@@ -158,13 +171,14 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 20px;
-        z-index: 50;
+        gap: 2vh;
+        margin-bottom: 2vh;
     }
     
     #sword {
-        width: 130px;
-        height: 130px;
+        /* 画面に合わせて剣のサイズも自動調整 */
+        width: min(30vw, 15vh, 130px);
+        height: min(30vw, 15vh, 130px);
         cursor: grab;
         position: relative;
         z-index: 200;
@@ -175,8 +189,8 @@
     #sword:active { cursor: grabbing; }
 
     #reset-btn {
-        padding: 12px 35px;
-        font-size: 16px;
+        padding: 10px 30px;
+        font-size: min(4vw, 16px);
         font-weight: bold;
         cursor: pointer;
         background-color: #4a4a4a;
@@ -249,19 +263,6 @@
     #modal-close-btn:active { transform: scale(0.95); }
 
     @media screen and (max-width: 768px) {
-        body { padding: 2vh 10px 3vh; }
-        #title-area {
-            font-size: 38px; 
-            padding: 8px 10px 12px; 
-            width: 95%; 
-            box-sizing: border-box;
-        }
-        #bird { width: 220px; height: 220px; }
-        #note { font-size: 18px; right: -40px; }
-        #kanji-naku { font-size: 160px; }
-        #bottom-area { gap: 15px; }
-        #sword { width: 110px; height: 110px; }
-        #reset-btn { padding: 12px 30px; }
         .modal-buttons { flex-direction: column; gap: 10px; }
     }
 </style>
@@ -445,7 +446,7 @@ window.onload = function() {
         modalText.innerText = "あなたは" + type + "タイプ！";
         
         var shareText = "私は" + type + "タイプ！#ホトトギス診断\n";
-        var shareUrl = "https://github.com/pia0314pia/hototogisu/blob/main/index.html";
+        var shareUrl = "https://pia0314piagreendice.github.io/hototogisu/";
         var twitterIntentUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(shareUrl);
         
         shareXBtn.onclick = function() {
