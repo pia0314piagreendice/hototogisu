@@ -12,10 +12,14 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        height: 100dvh; /* スマホのアドレスバーを考慮してdvhを使用 */
+        /* 画面上部から配置を開始 */
+        justify-content: flex-start;
+        height: 100vh; /* 古いブラウザ用のフォールバック */
+        height: 100dvh; /* スマホのアドレスバーを考慮した高さ */
         margin: 0;
-        gap: 20px;
+        /* 全体の上下に少しだけ余白を持たせる */
+        padding: 3vh 15px 4vh;
+        box-sizing: border-box;
         overflow: hidden;
         user-select: none;
         -webkit-user-select: none;
@@ -23,19 +27,20 @@
     }
 
     #title-area {
-        font-size: 42px;
+        /* タイトルを最上部に固定するため縮小を防ぐ */
+        flex-shrink: 0;
+        font-size: 52px; /* PC用に少し大きく */
         font-weight: bold;
         text-align: center;
         z-index: 10;
         background: #2c3e50;
         color: #fdfdfd;
-        padding: 8px 40px 15px;
+        padding: 10px 50px 18px;
         border: 2px solid #d4af37;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         position: relative;
-        margin-bottom: 15px;
         line-height: 1.2;
     }
     #title-area::before {
@@ -76,15 +81,20 @@
     }
 
     #center-area {
+        /* タイトルと下部ボタンの間（中央の空間すべて）を使用する */
+        flex-grow: 1;
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
     }
+    
     #bird {
         position: relative;
-        width: 180px;
-        height: 180px;
+        /* 鳥のサイズを拡大 */
+        width: 260px;
+        height: 260px;
     }
     
     .bird-svg-container {
@@ -98,22 +108,22 @@
     
     .bird-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
     .bird-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
-    .cut-left { transform: translateX(-50px) rotate(-15deg); }
-    .cut-right { transform: translateX(50px) rotate(15deg); }
+    .cut-left { transform: translateX(-60px) rotate(-15deg); }
+    .cut-right { transform: translateX(60px) rotate(15deg); }
 
     .singing-bird .beak-closed { display: none !important; }
     .singing-bird .beak-open { display: block !important; }
 
     #note {
         position: absolute;
-        font-size: 16px;
+        font-size: 22px; /* 吹き出しも大きく */
         font-weight: bold;
         color: #ff4081;
         background: rgba(255, 255, 255, 0.95);
         border: 2px solid #ff4081;
-        padding: 6px 10px;
-        border-radius: 20px;
-        top: -10px; right: -50px;
+        padding: 8px 14px;
+        border-radius: 24px;
+        top: -15px; right: -80px;
         opacity: 0;
         transition: opacity 0.5s, transform 0.5s;
         white-space: nowrap;
@@ -121,8 +131,8 @@
     }
     #note::after {
         content: ''; position: absolute;
-        bottom: -8px; left: 20px;
-        border-width: 8px 8px 0;
+        bottom: -10px; left: 25px;
+        border-width: 10px 10px 0;
         border-style: solid;
         border-color: #ff4081 transparent transparent transparent;
         display: block; width: 0;
@@ -134,7 +144,7 @@
 
     #kanji-naku {
         display: none;
-        font-size: 140px;
+        font-size: 200px; /* 「鳴」の文字も拡大 */
         font-weight: bold;
         background: linear-gradient(to bottom, #d4af37, #b8860b);
         -webkit-background-clip: text;
@@ -149,17 +159,18 @@
     }
 
     #bottom-area {
+        flex-shrink: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 20px;
         z-index: 50;
-        margin-top: 10px;
     }
     
     #sword {
-        width: 94px;
-        height: 94px;
+        /* 剣のサイズを拡大 */
+        width: 130px;
+        height: 130px;
         cursor: grab;
         position: relative;
         z-index: 200;
@@ -169,8 +180,8 @@
     #sword:active { cursor: grabbing; }
 
     #reset-btn {
-        padding: 10px 30px;
-        font-size: 14px;
+        padding: 12px 35px;
+        font-size: 16px;
         font-weight: bold;
         cursor: pointer;
         background-color: #4a4a4a;
@@ -227,37 +238,37 @@
     }
     #modal-close-btn:active { transform: scale(0.95); }
 
-    /* ★ スマホ等向けに上下左右の余白を限界まで詰める調整 */
+    /* ★ スマホ画面向けの調整：要素を全体的に大きくして隙間を減らす */
     @media screen and (max-width: 768px) {
         body {
-            justify-content: center;
-            padding: 5px; /* 画面両端の余白を削減 */
-            gap: 5px; /* タイトル・鳥・剣の間の隙間を大幅に詰める */
+            padding: 2vh 10px 3vh; /* 上下左右の余白設定 */
         }
         #title-area {
-            font-size: 34px; /* 横幅に収まるよう文字サイズを微調整 */
-            padding: 5px 10px 8px; /* タイトル枠内の余白を削減 */
-            margin-bottom: 5px; 
-            width: 95%; /* 左右の余白を少なくして枠を広く使う */
+            font-size: 38px; /* スマホでも見栄えがするよう文字を大きく */
+            padding: 8px 10px 12px; 
+            width: 95%; 
             box-sizing: border-box;
         }
-        #center-area {
-            margin: 5px 0; /* 中央エリア周りの余白を最小化 */
-        }
         #bird {
-            width: 150px; /* 鳥を少し小さくして画面への収まりを良くする */
-            height: 150px;
+            width: 220px; /* 鳥をスマホ画面いっぱいまで拡大 */
+            height: 220px;
+        }
+        #note {
+            font-size: 18px;
+            right: -40px;
+        }
+        #kanji-naku {
+            font-size: 160px;
         }
         #bottom-area {
-            margin-top: 0;
-            gap: 5px; /* 剣とリセットボタンの隙間を詰める */
+            gap: 15px; 
         }
         #sword {
-            width: 80px; /* 剣も少し小さくしてバランスを取る */
-            height: 80px;
+            width: 110px; /* 剣も拡大 */
+            height: 110px;
         }
         #reset-btn {
-            padding: 8px 25px; /* ボタンの余白も少しスリムに */
+            padding: 12px 30px; 
         }
     }
 </style>
@@ -391,7 +402,8 @@
         resultModal.classList.remove('show');
     });
 
-    function isColliding(el1, el2, padding = 15) {
+    // 当たり判定の余白も要素の拡大に合わせて 15 -> 20 へ少し広げました
+    function isColliding(el1, el2, padding = 20) {
         const rect1 = el1.getBoundingClientRect();
         const rect2 = el2.getBoundingClientRect();
         return !(
@@ -438,7 +450,8 @@
     }
 
     makeDraggable(sword, (draggedElement) => {
-        if (isColliding(draggedElement, bird, 15)) {
+        // 鳥を斬る判定（信長）
+        if (isColliding(draggedElement, bird, 20)) {
             gameActive = false;
             clearTimeout(timerId);
             
@@ -458,6 +471,7 @@
                 showResult("あなたは信長タイプ！");
             }, 1000);
         }
+        // 「如」を斬る判定
         else if (charJo.style.visibility !== 'hidden' && isColliding(draggedElement, charJo, 15)) {
             charJo.style.visibility = 'hidden';
             charOnna.style.display = 'inline-block';
@@ -467,36 +481,36 @@
             setTimeout(() => { sword.style.visibility = 'hidden'; }, 300);
             
             setTimeout(() => {
-                charOnna.style.transform = 'translateX(-20px) rotate(-15deg)';
-                charKuchi.style.transform = 'translateX(20px) rotate(15deg)';
+                // 要素が大きくなったので、飛び散る距離も広げる
+                charOnna.style.transform = 'translateX(-25px) rotate(-15deg)';
+                charKuchi.style.transform = 'translateX(25px) rotate(15deg)';
             }, 50);
 
+            // 「口」を鳥へ運ぶ判定（秀吉）
             makeDraggable(charKuchi, (draggedKuchi, curX, curY) => {
                 const bRect = bird.getBoundingClientRect();
                 const kRect = draggedKuchi.getBoundingClientRect();
                 
-                // ホトトギスと「口」の中心座標を計算
                 const kCenterX = kRect.left + kRect.width / 2;
                 const kCenterY = kRect.top + kRect.height / 2;
                 const bCenterX = bRect.left + bRect.width / 2;
                 const bCenterY = bRect.top + bRect.height / 2;
 
-                // 左側に配置した際の広い当たり判定を専用に作成
+                // 巨大化に対応するため、判定エリアを拡大
                 const isLeft = kCenterX < bCenterX;
-                const isNearX = (bCenterX - kCenterX) < 250; 
-                const isNearY = Math.abs(bCenterY - kCenterY) < 150;
+                const isNearX = (bCenterX - kCenterX) < 320; // 250 -> 320 に拡大
+                const isNearY = Math.abs(bCenterY - kCenterY) < 220; // 150 -> 220 に拡大
 
-                // 触れていなくても、左側の近い空間に置けば合体処理を発火
                 if (isLeft && isNearX && isNearY) {
                     gameActive = false;
                     clearTimeout(timerId);
                     
-                    // 合体する吸い込みアニメーション
                     draggedKuchi.style.transition = 'transform 0.4s ease-in, opacity 0.4s ease-in';
                     birdWhole.style.transition = 'transform 0.4s ease-in, opacity 0.4s ease-in';
                     
-                    const moveX = (bRect.left + 20) - kRect.left;
-                    const moveY = (bRect.top + (bRect.height / 2) - (kRect.height / 2)) - kRect.top;
+                    // 鳥のサイズが変わってもくちばしの位置へ吸い込まれるように割合で計算
+                    const moveX = (bRect.left + bRect.width * 0.15) - kRect.left;
+                    const moveY = (bRect.top + bRect.height * 0.5 - kRect.height / 2) - kRect.top;
                     
                     curX += moveX;
                     curY += moveY;
@@ -507,7 +521,6 @@
                     birdWhole.style.transform = 'translateX(20px) scale(0.9)';
                     birdWhole.style.opacity = '0';
                     
-                    // 吸い込まれた直後に「鳴」フラッシュ演出
                     setTimeout(() => {
                         draggedKuchi.style.display = 'none';
                         bird.style.display = 'none';
